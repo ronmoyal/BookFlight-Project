@@ -1,0 +1,142 @@
+﻿@model Flight_Project.Models.Card
+@{Flight_Project.ViewModel.FlightViewModel fvm = (Flight_Project.ViewModel.FlightViewModel)Session["FlightViewModel"];}
+
+@{ Session["FlightViewModel"] = fvm;}
+
+@{
+    ViewBag.Title = "Payment";
+}
+
+<img src="../../image/CreditCard2.jpeg" alt="Credit Card" style="position: absolute; width: 1400px; height: 1000px; left: 265px" />
+<img src="../../image/BlueAir.png" alt="Blu Airplane" style="position: absolute; width: 300px; height: 200px; left: 200px" />
+<div style="position: absolute; left: 250px; top: 500px; font-family: 'Bradley Hand', sans-serif; font-size: 2em">
+
+
+    <div id="timer" style="color: red">Time left:  @fvm.Timer seconds</div>
+
+    <div>Origin: @fvm.originOUT.ToString() | date: @fvm.dateOB.ToShortDateString() | Time: @fvm.timeOB.ToString()</div>
+
+
+    @if (fvm.InFlightID != null)  //if have two ways
+    {
+        <div>Return: @fvm.originIN.ToString() | date: @fvm.dateReturn.ToShortDateString() | Time: @fvm.timeReturn.ToString()</div>
+
+    }
+
+    <div>Seats number:     @fvm.seatInput.ToString()</div>
+
+    <div>Price Total:     @fvm.Totalprice.ToString()</div>
+</div>
+
+
+
+@using (Html.BeginForm("Details", "Ticket", FormMethod.Post, new { id = "payment-form", style = "width: 100%" }))
+{
+    <form>
+        <div style="position: absolute; left: 247px; margin-top: 645px; font-family: 'Bradley Hand', sans-serif;  font-size: 1.2em; width: 150px; height: 37px;">
+            <div class="form-group" oninput="validateCreditCardNumber(this)">
+                <div>
+                    @Html.EditorFor(model => model.IdNumber, new { htmlAttributes = new { @class = "form-control", style = "width: 100%", placeholder = "ID    Number" } })
+                    @Html.ValidationMessageFor(model => model.IdNumber, "", new { @class = "text-danger" })
+
+
+                </div>
+            </div>
+        </div>
+        <div style="position: absolute; left: 400px; top: 745px;">@Html.CheckBox("save")</div>
+        <div style="position: absolute; left: 414px; top: 746px;">Save card details for later</div>
+        <div style="position: absolute; left: 612px; top: 470px; font-family: 'Bradley Hand', sans-serif;  font-size: 1.2em; width: 280px; height: 37px;">
+            <div class="form-group" oninput="validateCreditCardNumber(this)">
+                <div>
+                    @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control", style = "width: 100%", placeholder = "Israel    Israeli" } })
+                    @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div style="position: absolute; left: 612px; top: 420px; font-family: 'Bradley Hand', sans-serif;  font-size: 1.2em; width: 280px; height: 37px;">
+            <div class="form-group" oninput="validateCreditCardNumber(this)">
+                <div>
+                    @Html.EditorFor(model => model.cardNum, new { htmlAttributes = new { @class = "form-control", style = "width: 100%", placeholder = "1234      5678      9876      5432" } })
+                    @Html.ValidationMessageFor(model => model.cardNum, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div style="position: absolute; left: 960px; top: 470px; font-family: 'Bradley Hand', sans-serif;  font-size: 1.2em; width: 130px; height: 37px;">
+            <div class="form-group" oninput="validateExpirationDate(this)">
+                <div>
+                    @Html.EditorFor(model => model.expDate, new { htmlAttributes = new { @class = "form-control", style = "width: 100%", placeholder = "     MM  /  YY" } })
+                    @Html.ValidationMessageFor(model => model.expDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div style="position: absolute; left: 1015px; top: 690px; width: 250px; height: 80px; font-family: 'Bradley Hand', sans-serif;  font-size: 1.2em">
+            <div class="form-group col-md-6" oninput="validateCVV(this)">
+                <div>
+                    @Html.EditorFor(model => model.cvv, new { htmlAttributes = new { @class = "form-control", style = "width: 100%", placeholder = "cvv" } })
+                    @Html.ValidationMessageFor(model => model.cvv, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div style="position: absolute; left: 250px; top: 730px; font-size: 2em;">
+            <button type="submit" class="btn btn-primary">Pay</button>
+        </div>
+
+    </form>
+    <div style="position: absolute; left: 610px; top: 150px;">
+        @if (ViewBag.creditExist != null)
+        {
+            @ViewBag.creditExist
+            @Html.ActionLink("Pay", "Existcard")
+
+        }
+    </div>
+
+    <style>
+        .form-control:invalid {
+            border-color: #dc3545;
+        }
+    </style>
+}
+
+
+<div style="position: absolute; left: 310px; top: 730px; font-size: 2em">
+    @using (Html.BeginForm("ChangeSeats", "Result", FormMethod.Post))
+    {
+
+        <button type="submit" class="btn btn-default">Change</button>
+        <style>
+            .form-control:invalid {
+                border-color: #dc3545;
+            }
+        </style>
+    }
+</div>
+
+
+
+
+<script>
+        var timer = @fvm.Timer; // get the timer value from the model
+        setInterval(function () {
+            var timerElement = document.getElementById("timer");
+            if (timer > 0) {
+                timer--;
+                timerElement.innerHTML = "Time left: " + timer + " seconds";
+            } else
+            {
+
+                timerElement.innerHTML = "Time's up!";
+                window.location.href = '/Home/TImesUp'; 
+
+                clearInterval(); // stop the interval
+
+            }
+        }, 1000); // interval of 1 second
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

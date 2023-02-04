@@ -1,0 +1,65 @@
+﻿@model Flight_Project.ViewModel.FlightViewModel
+
+@using Flight_Project.Models;
+
+@{Flight_Project.ViewModel.FlightViewModel fvm = (Flight_Project.ViewModel.FlightViewModel)Session["FlightViewModel"];}
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<style>
+    body {
+        background-image: url('../../image/Vecation.jpeg');
+        height: 100vh;
+        background-size: cover;
+        background-position: center;
+    }
+</style>
+
+<h2 style="font-family: 'Bradley Hand', sans-serif; font-size: 3em">Your vecation is on the way</h2>
+<h3>Origin Flight Details</h3>
+<div>
+
+</div>
+
+
+<h4>Order ID: @fvm.order.OrderId.ToString()</h4>
+<h4>Origin: @fvm.order.origin.ToString() </h4>
+<h4>Detination: @fvm.order.destination.ToString()</h4>
+<h4>Date: @fvm.order.dateOB.ToShortDateString()</h4>
+<h4>Time: @fvm.order.timeOB</h4>
+<h4>Flight Number: @fvm.OutFlightID.ToString()</h4>
+<h4>Seats Number:@fvm.seatInput.ToString()</h4>
+
+@if (fvm.InFlightID != null)  //if have two ways
+{
+    <h3>Return Flight Details</h3>
+    <div>
+        <h4>Order ID: @fvm.order.OrderId.ToString()</h4>
+        <h4>Origin: @fvm.order.destination.ToString()</h4>
+        <h4>Detination: @fvm.order.origin.ToString()</h4>
+        <h4>Date: @fvm.order.dateReturn.ToShortDateString()</h4>
+        <h4>Time: @fvm.order.timeReturn</h4>
+        <h4>Flight Number: @fvm.InFlightID.ToString()</h4>
+        <h4>Seats Number:@fvm.seatInput.ToString()</h4>
+    </div>
+
+}
+<div>
+    <h3 style="color: #3e8f3e">Total Price: @fvm.Totalprice.ToString()</h3>
+</div>
+
+
+
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Post))
+{
+
+    <button type="submit" class="btn btn-default">Return To Home Page</button>
+    <style>
+        .form-control:invalid {
+            border-color: #dc3545;
+        }
+    </style>
+}

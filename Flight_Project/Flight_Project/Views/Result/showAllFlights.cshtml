@@ -1,0 +1,127 @@
+﻿
+@model Flight_Project.ViewModel.FlightViewModel
+
+@using Flight_Project.Models;
+
+@{Flight_Project.ViewModel.FlightViewModel fvm = (Flight_Project.ViewModel.FlightViewModel)Session["FlightViewModel"];}
+@{
+    ViewBag.Title = "showAllFlights";
+}
+
+<h2>showAllFlights</h2>
+
+@using (Html.BeginForm("SortTable", "Result", FormMethod.Get))
+{
+    <label for="sortOrder">Sort by:</label>
+    <select id="sortOrder" name="sortOrder">
+        <option> -select sort- </option>
+        <option value="price_asc">Price (low to high)</option>
+        <option value="price_desc">Price (high to low)</option>
+        <option value="popularity_asc">Popularity (low to high)</option>
+        <option value="country_asc">Country (A-Z)</option>
+    </select>
+    <input type="submit" value="Sort" />
+}
+
+
+
+@if (!fvm.backFlightsList.Any() && fvm.OutFlightID == null) //אין טיסה חזור ולא נבחרה טיסה הלוך עדיין
+{
+    if (TempData["Message"] != null)
+    {
+        <script>
+        window.alert("@TempData["Message"]");
+        </script>
+    }
+    <br />
+    using (Html.BeginForm("showReturnFlight", "Result", FormMethod.Post))
+    {
+
+        <table class="table">
+            <tr>
+                <th>Flight Id</th>
+                <th>Origin Country</th>
+                <th>Destination Country</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Price</th>
+            </tr>
+
+            @foreach (Flight flt in fvm.flightsList)
+            {
+
+                <tr>
+                    <td> @flt.flightID</td>
+                    <td> @flt.origin</td>
+                    <td> @flt.destination</td>
+                    <td> @flt.date.ToShortDateString()</td>
+                    <td> @flt.time</td>
+                    <td> @flt.price</td>
+                    <td>@Html.RadioButtonFor(m => m.OutFlightID, flt.flightID.Trim(' ').ToString())</td>
+
+                </tr>
+
+            }
+
+
+        </table>
+        <div><input id="Submit1" name="subButton" type="submit" value="Choose Return Flight" /></div>
+
+
+        <div><input id="Submit2" name="subButton" type="submit" value="Book Flight" /></div>
+
+    }
+}
+
+
+@using (Html.BeginForm("BookSeat", "Result", FormMethod.Post))
+{
+
+
+
+    if (fvm.backFlightsList.Any())
+    {
+
+        <h4>Return flights:</h4>
+        <br />
+        <table class="table">
+            <tr>
+                <th>Flight Id</th>
+                <th>Origin Country</th>
+                <th>Destination Country</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Price</th>
+            </tr>
+            @foreach (Flight flt in fvm.backFlightsList)
+            {
+
+                <tr>
+                    <td> @flt.flightID</td>
+                    <td> @flt.origin</td>
+                    <td> @flt.destination</td>
+                    <td> @flt.date.ToShortDateString()</td>
+                    <td> @flt.time</td>
+                    <td> @flt.price</td>
+                    <td>@Html.RadioButtonFor(m => m.InFlightID, flt.flightID.Trim(' ').ToString())</td>
+
+                </tr>
+
+
+            }
+        </table>
+        <div><input id="Submit1" type="submit" value="Book Seat" /></div>
+
+
+    }
+}
+
+@section scripts{
+    <script>
+        window.addEventListener('load', function () {
+            // Get all the radio buttons
+            var radios = document.querySelectorAll('input[type=radio]');
+            radios[0].checked = true;
+        });
+    </script>
+}

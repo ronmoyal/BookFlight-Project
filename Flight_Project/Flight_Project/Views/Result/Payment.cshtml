@@ -1,0 +1,137 @@
+﻿@model Flight_Project.Models.Card
+@{Flight_Project.ViewModel.FlightViewModel fvm = (Flight_Project.ViewModel.FlightViewModel)Session["FlightViewModel"];}
+
+@{ Session["FlightViewModel"] = fvm;}
+
+@{
+    ViewBag.Title = "Payment";
+}
+
+<h2>Payment</h2>
+
+
+<div id="timer">Time left: @fvm.Timer seconds</div>
+
+<div>Origin: @fvm.originOUT.ToString() | flight number: @fvm.OutFlightID.ToString()</div>
+
+
+@if (fvm.InFlightID != null)  //if have two ways
+{
+    <div>Origin: @fvm.originIN.ToString() | flight number: @fvm.InFlightID.ToString(), @fvm.dateReturn</div>
+
+}
+
+<div>Seats number:@fvm.seatInput.ToString()</div>
+
+<div>Price Total @fvm.Totalprice.ToString()</div>
+
+
+
+@using (Html.BeginForm("Details", "Ticket", FormMethod.Post, new { id = "payment-form" }))
+{
+    <div class="form-group" style="width: 200px; margin: 0 auto;">
+        @Html.LabelFor(model => model.IdNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div>
+            @Html.EditorFor(model => model.IdNumber, new { htmlAttributes = new { @class = "form-control", style = "width: 100%;" } })
+            @Html.ValidationMessageFor(model => model.IdNumber, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group" style="width: 200px; margin: 0 auto;">
+        @Html.LabelFor(model => model.FullName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div>
+            @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control", style = "width: 100%;" } })
+            @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group" style="width: 200px; margin: 0 auto;">
+        @Html.LabelFor(model => model.cardNum, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div>
+            @Html.EditorFor(model => model.cardNum, new { htmlAttributes = new { @class = "form-control", style = "width: 100%;" } })
+            @Html.ValidationMessageFor(model => model.cardNum, "", new { @class = "text-danger" })
+            <input oninput="validateCreditCardNumber(this)">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <input oninput="validateExpirationDate(this)">
+        <div class="form-group" style="width: 200px; margin: 0 auto;">
+            @Html.LabelFor(model => model.expDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div>
+                @Html.EditorFor(model => model.expDate, new { htmlAttributes = new { @class = "form-control", style = "width: 100%;" } })
+                @Html.ValidationMessageFor(model => model.expDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group" style="width: 200px; margin: 0 auto;">
+            <input oninput="validateCVV(this)">
+            @Html.LabelFor(model => model.cvv, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div>
+                @Html.EditorFor(model => model.cvv, new { htmlAttributes = new { @class = "form-control", style = "width: 100%;" } })
+                @Html.ValidationMessageFor(model => model.cvv, "", new { @class = "text-danger" })
+            </div>
+
+
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary" onclick="submitPaymentForm(event)">Pay</button>
+
+    <style>
+        .form-control:invalid {
+            border-color: #dc3545;
+        }
+    </style>
+}
+
+
+
+
+
+@using (Html.BeginForm("ChangeSeats", "Result", FormMethod.Post))
+{
+
+    <button type="submit" class="btn btn-default">Change</button>
+    <style>
+        .form-control:invalid {
+            border-color: #dc3545;
+        }
+    </style>
+}
+
+
+<script>
+
+    function validateCreditCardNumber(input) {
+        // Validate the credit card number using a regular expression
+        // or some other method
+    }
+
+    function validateExpirationDate(input) {
+        // Validate the expiration date using a regular expression
+    }
+</script>
+
+
+<script>
+        var timer = @fvm.Timer; // get the timer value from the model
+        setInterval(function () {
+            var timerElement = document.getElementById("timer");
+            if (timer > 0) {
+                timer--;
+                timerElement.innerHTML = "Time left: " + timer + " seconds";
+            } else
+            {
+
+                timerElement.innerHTML = "Time's up!";//צריך לתקן דאטה בייס
+                window.location.href = '/Home/TImesUp'; //סיום הזמן מעבר למסך אחר
+
+                clearInterval(); // stop the interval
+
+            }
+        }, 1000); // interval of 1 second
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,101 @@
+﻿
+@model Flight_Project.ViewModel.FlightViewModel
+
+@using Flight_Project.Models;
+
+@{Flight_Project.ViewModel.FlightViewModel fvm = (Flight_Project.ViewModel.FlightViewModel)Session["FlightViewModel"];}
+
+<h3>Result:</h3>
+<br />
+
+@if (TempData["Message"] != null) //not find a flights
+{
+    <div>@TempData["Message"]</div>
+}
+
+
+else
+{
+    using (Html.BeginForm("BookSeat", "Result", FormMethod.Post))
+    {
+
+        if (fvm.flightsList.Any())
+        {
+            <h4>outbound flights:</h4>
+            <br />
+            <table class="table">
+                <tr>
+                    <th>Flight Id</th>
+                    <th>Origin Country</th>
+                    <th>Destination Country</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Price</th>
+                </tr>
+
+                @foreach (Flight flt in fvm.flightsList)
+                {
+
+                    <tr>
+                        <td> @flt.flightID</td>
+                        <td> @flt.origin</td>
+                        <td> @flt.destination</td>
+                        <td> @flt.date.ToShortDateString()</td>
+                        <td> @flt.time</td>
+                        <td> @flt.price</td>
+                        <td>@Html.RadioButtonFor(m => m.OutFlightID, flt.flightID.Trim(' ').ToString())</td>
+
+                    </tr>
+
+                }
+
+            </table>
+        }
+
+        if (fvm.backFlightsList.Any())
+        {
+            <h4>Return flights:</h4>
+            <br />
+            <table class="table">
+                <tr>
+                    <th>Flight Id</th>
+                    <th>Origin Country</th>
+                    <th>Destination Country</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Price</th>
+                </tr>
+                @foreach (Flight flt in fvm.backFlightsList)
+                {
+
+                    <tr>
+                        <td> @flt.flightID</td>
+                        <td> @flt.origin</td>
+                        <td> @flt.destination</td>
+                        <td> @flt.date.ToShortDateString()</td>
+                        <td> @flt.time</td>
+                        <td> @flt.price</td>
+                        <td>@Html.RadioButtonFor(m => m.InFlightID, flt.flightID.Trim(' ').ToString())</td>
+
+                    </tr>
+
+
+                }
+            </table>
+
+
+        }
+        <div><input id="Submit1" type="submit" value="Book Seat" /></div>
+    }
+}
+
+@section scripts{
+    <script>
+        window.addEventListener('load', function () {
+            // Get all the radio buttons
+            var radios = document.querySelectorAll('input[type=radio]');
+            radios[0].checked = true;
+            radios[@fvm.flightsList.Count()].checked = true;
+        });
+    </script>
+}

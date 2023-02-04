@@ -1,0 +1,160 @@
+﻿
+@model Flight_Project.ViewModel.FlightViewModel
+
+@using Flight_Project.Models;
+
+@{Flight_Project.ViewModel.FlightViewModel fvm = (Flight_Project.ViewModel.FlightViewModel)Session["FlightViewModel"];}
+
+
+<br />
+<style>
+    .alert {
+        color: white;
+        background-color: red;
+        text-align: center;
+        padding: 20px;
+    }
+</style>
+
+<style>
+
+    body {
+        background-image: url('../../image/Coffie.jpeg');
+        height: 100vh;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .table {
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 0.9em;
+        font-family: sans-serif;
+        min-width: 400px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    }
+
+        .table thead tr {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px 15px;
+        }
+
+        .table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+
+
+            .table tbody tr:nth-of-type(odd) {
+                background-color: rgba(243,243,243,0.77);
+            }
+
+            .table tbody tr:nth-of-type(even) {
+                background-color: #f3f3f3;
+            }
+
+
+
+            .table tbody tr:last-of-type {
+                border-bottom: 5px solid #2aabd2;
+            }
+</style>
+
+@if (TempData["Message"] != null) //not find a flights
+{
+    <div class="alert">@TempData["Message"]<span id="alert-message"></span></div>
+}
+
+else
+{
+
+    using (Html.BeginForm("BookSeat", "Result", FormMethod.Post))
+    {
+
+        if (fvm.flightsList.Any())
+        {
+            <h3 style="font-size:25px; color: #0f0f0f; font-weight: bold;  margin:10px">Outbound Flights</h3>
+            <br />
+            <table class="table" style=" margin-top: 1px;">
+                <tr>
+                    <th>Flight Id</th>
+                    <th>Origin Country</th>
+                    <th>Destination Country</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Price</th>
+                </tr>
+
+                @foreach (Flight flt in fvm.flightsList)
+                {
+
+                    <tr>
+                        <td> @flt.flightID</td>
+                        <td> @flt.origin</td>
+                        <td> @flt.destination</td>
+                        <td> @flt.date.ToLongDateString()</td>
+                        <td> @flt.time</td>
+                        <td> @flt.price</td>
+                        <td>@Html.RadioButtonFor(m => m.OutFlightID, flt.flightID.Trim(' ').ToString())</td>
+
+                    </tr>
+
+                }
+
+            </table>
+        }
+
+        if (fvm.backFlightsList.Any())
+        {
+            <h4 style="font-size:25px; color: #0f0f0f; font-weight: bold;  margin:10px">Return Flights</h4>
+            <br />
+            <table class="table" style=" margin-top: 1px;">
+                <tr>
+                    <th>Flight Id</th>
+                    <th>Origin Country</th>
+                    <th>Destination Country</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Price</th>
+                </tr>
+                @foreach (Flight flt in fvm.backFlightsList)
+                {
+
+                    <tr>
+                        <td> @flt.flightID</td>
+                        <td> @flt.origin</td>
+                        <td> @flt.destination</td>
+                        <td> @flt.date.ToLongDateString()</td>
+                        <td> @flt.time</td>
+                        <td> @flt.price</td>
+                        <td>@Html.RadioButtonFor(m => m.InFlightID, flt.flightID.Trim(' ').ToString())</td>
+
+                    </tr>
+
+
+                }
+            </table>
+
+
+        }
+        <div><input id="Submit1" type="submit" value="Book Seat" /></div>
+
+    }
+}
+
+@section scripts{
+    <script>
+        window.addEventListener('load', function () {
+            // Get all the radio buttons
+            var radios = document.querySelectorAll('input[type=radio]');
+            radios[0].checked = true;
+            radios[@fvm.flightsList.Count()].checked = true;
+        });
+    </script>
+}

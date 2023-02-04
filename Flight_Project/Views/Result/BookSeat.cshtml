@@ -1,0 +1,42 @@
+﻿@model Flight_Project.ViewModel.FlightViewModel
+@using Flight_Project.Models;
+@{Flight_Project.ViewModel.FlightViewModel fvm = (Flight_Project.ViewModel.FlightViewModel)Session["FlightViewModel"];}
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-danger">@TempData["Message"]</div>// no flight valids
+}
+
+<img src="../../image/Seats.jpg" alt="Airplane Seats " style="width: 100%; height: 600px; margin-top: 150px; " />
+
+<br />
+
+<script>
+    function validateForm() {
+        var seats = document.forms["myForm"]["seatInput"].value;
+        if (seats < 1 || seats > 10) {
+            alert("Error: Number of seats must be between 1 and 10");
+            return false;
+        }
+    }
+</script>
+<div style="position: absolute; left: 700px; top: 70px; font-family: 'Bradley Hand', sans-serif; font-size: 1em">
+    @using (Html.BeginForm("Payment", "Result", FormMethod.Post, new { name = "myForm", onsubmit = "return validateForm()" }))
+    {
+        <label for="seatInput" style="display: block; margin: auto; font-size: large; left: 0; top: 60px; font-family: 'Bradley Hand', sans-serif;">Choose a number of seats on flight</label>
+        <br>
+        @Html.TextBoxFor(m => m.seatInput, new { min = 1, max = 10, style = "border-color: blue; display: block; margin: auto; " })
+        <br>
+        <input type="submit" value="Continue to Payment">
+    }
+
+    <div>
+        <p> @Html.ActionLink("Back to search", "Index", "Home")</p>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

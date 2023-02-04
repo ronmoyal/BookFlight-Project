@@ -1,0 +1,61 @@
+﻿@{ 
+    bool isLoggedIn = true;
+    if(string.IsNullOrEmpty(User.Identity.Name))
+    {
+        isLoggedIn = false;
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - MoyalTickets</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <style>
+/*        body {
+            background-image: url('../../image/istockphoto-1397959151-170667a.jpg');
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+        }*/
+    </style>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" title="more options">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+@*                @Html.ActionLink("Moyal & Dorel-policeMen", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+*@            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @{
+                        if (isLoggedIn)
+                        {
+                <li>@Html.ActionLink(User.Identity.Name, "Index", "Home")</li>
+                <li>@Html.ActionLink("Sign Out", "Signout", "Account")</li>
+            }
+
+                    }
+
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

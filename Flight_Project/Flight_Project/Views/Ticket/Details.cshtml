@@ -1,0 +1,36 @@
+﻿
+@model Flight_Project.ViewModel.FlightViewModel
+
+@using Flight_Project.Models;
+
+@{Flight_Project.ViewModel.FlightViewModel fvm = (Flight_Project.ViewModel.FlightViewModel)Session["FlightViewModel"];}
+
+@{
+    ViewBag.Title = "Details";
+}
+<h2>Details</h2>
+
+
+<h4>Order ID: @fvm.order.OrderId.ToString() | Origin: @fvm.order.origin.ToString() | Detination: @fvm.order.destination.ToString() | Date: @fvm.order.dateOB.ToShortDateString() | Time: @fvm.order.timeOB | flight number: @fvm.OutFlightID.ToString() | Seats number:@fvm.seatInput.ToString()</h4>
+
+
+@if (fvm.InFlightID != null)  //if have two ways
+{
+    <h4>Order ID: @fvm.order.OrderId.ToString() | Origin: @fvm.order.destination.ToString() | Detination: @fvm.order.origin.ToString() | Date: @fvm.order.dateReturn.ToShortDateString() | Time: @fvm.order.timeReturn | flight number: @fvm.InFlightID.ToString() | Seats number:@fvm.seatInput.ToString()</h4>
+
+}
+
+<h4>Price Total @fvm.Totalprice.ToString()</h4>
+
+
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Post))
+{
+
+    <button type="submit" class="btn btn-default">Return To Home Page</button>
+    <style>
+        .form-control:invalid {
+            border-color: #dc3545;
+        }
+    </style>
+}
